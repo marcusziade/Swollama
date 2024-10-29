@@ -2,16 +2,6 @@ import Foundation
 
 /// Parameters for chat completion requests.
 public struct ChatRequest: Codable, Sendable {
-    public init(model: String, messages: [ChatMessage], tools: [ToolDefinition]? = nil, format: ResponseFormat? = nil, options: ModelOptions? = nil, stream: Bool? = nil, keepAlive: TimeInterval? = nil) {
-        self.model = model
-        self.messages = messages
-        self.tools = tools
-        self.format = format
-        self.options = options
-        self.stream = stream
-        self.keepAlive = keepAlive
-    }
-    
     /// The model to use for chat
     public let model: String
     /// The messages in the conversation
@@ -31,33 +21,35 @@ public struct ChatRequest: Codable, Sendable {
         case model, messages, tools, format, options, stream
         case keepAlive = "keep_alive"
     }
+
+    public init(
+        model: String,
+        messages: [ChatMessage],
+        tools: [ToolDefinition]? = nil,
+        format: ResponseFormat? = nil,
+        options: ModelOptions? = nil,
+        stream: Bool? = nil,
+        keepAlive: TimeInterval? = nil
+    ) {
+        self.model = model
+        self.messages = messages
+        self.tools = tools
+        self.format = format
+        self.options = options
+        self.stream = stream
+        self.keepAlive = keepAlive
+    }
 }
 
 /// A message in a chat conversation
 public struct ChatMessage: Codable, Sendable {
-    /// Creates a new chat message
-    /// - Parameters:
-    ///   - role: The role of the message sender
-    ///   - content: The content of the message
-    ///   - images: Optional array of base64-encoded image data
-    ///   - toolCalls: Optional array of tool calls made by the assistant
-    public init(role: MessageRole, content: String, images: [String]? = nil, toolCalls: [ToolCall]? = nil) {
-        self.role = role
-        self.content = content
-        self.images = images
-        self.toolCalls = toolCalls
-    }
-
     /// The role of the message sender
     public let role: MessageRole
-
     /// The content of the message
     public let content: String
-
     /// Optional images for multimodal models
     /// Each string should be a base64-encoded image
     public let images: [String]?
-
     /// Tool calls made by the assistant
     public let toolCalls: [ToolCall]?
 
@@ -65,13 +57,24 @@ public struct ChatMessage: Codable, Sendable {
         case role, content, images
         case toolCalls = "tool_calls"
     }
+
+    public init(
+        role: MessageRole,
+        content: String,
+        images: [String]? = nil,
+        toolCalls: [ToolCall]? = nil
+    ) {
+        self.role = role
+        self.content = content
+        self.images = images
+        self.toolCalls = toolCalls
+    }
 }
 
 /// Available message roles
-public enum MessageRole: String, Codable {
+public enum MessageRole: String, Codable, Sendable {
     case system
     case user
     case assistant
     case tool
 }
-

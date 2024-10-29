@@ -1,3 +1,8 @@
+#if canImport(Darwin)
+import Darwin
+#else
+import Glibc
+#endif
 import Foundation
 
 /// Protocol for handling terminal-related operations and queries
@@ -15,7 +20,13 @@ struct DefaultTerminalHelper: TerminalHelper {
     /// - Note: Uses the TIOCGWINSZ ioctl command to query terminal dimensions
     var terminalWidth: Int {
         var w = winsize()
-        guard ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == 0 else {
+        #if os(Linux)
+        let result = ioctl(Int32(STDOUT_FILENO), UInt(TIOCGWINSZ), &w)
+        #else
+        let result = ioctl(STDOUT_FILENO, TIOCGWINSZ, &w)
+        #endif
+
+        guard result == 0 else {
             return 50 // Default fallback width
         }
         return Int(w.ws_col)

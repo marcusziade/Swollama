@@ -63,10 +63,11 @@ public struct GenerateRequest: Codable, Sendable {
 }
 
 /// Response format options
-public enum ResponseFormat: String, Codable {
+public enum ResponseFormat: String, Codable, Sendable {
     case json
 }
 
+/// Base model options that can be applied to any request
 public struct ModelOptions: Codable, Sendable {
     public let numKeep: Int?
     public let seed: UInt32?

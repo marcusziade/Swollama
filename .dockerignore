@@ -1,0 +1,11 @@
+.build/
+.git/
+.gitignore
+.swiftpm/
+Tests/
+*.md
+.DS_Store
+*.xcodeproj
+*.xcworkspace
+DerivedData/
+.build

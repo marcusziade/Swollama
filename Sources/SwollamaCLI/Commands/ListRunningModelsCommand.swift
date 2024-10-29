@@ -35,14 +35,28 @@ struct ListRunningModelsCommand: CommandProtocol {
     }
 
     private func formatDate(_ date: Date) -> String {
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .full
-        let relativeTime = formatter.localizedString(for: date, relativeTo: Date())
-
         let absoluteFormatter = DateFormatter()
         absoluteFormatter.dateStyle = .medium
         absoluteFormatter.timeStyle = .medium
         let absoluteTime = absoluteFormatter.string(from: date)
+
+        // Calculate relative time manually since RelativeDateTimeFormatter isn't available on Linux
+        let interval = date.timeIntervalSince(Date())
+        let relativeTime: String
+
+        switch abs(interval) {
+        case 0..<60:
+            relativeTime = "just now"
+        case 60..<3600:
+            let minutes = Int(abs(interval) / 60)
+            relativeTime = "\(minutes) minute\(minutes == 1 ? "" : "s") \(interval < 0 ? "ago" : "from now")"
+        case 3600..<86400:
+            let hours = Int(abs(interval) / 3600)
+            relativeTime = "\(hours) hour\(hours == 1 ? "" : "s") \(interval < 0 ? "ago" : "from now")"
+        default:
+            let days = Int(abs(interval) / 86400)
+            relativeTime = "\(days) day\(days == 1 ? "" : "s") \(interval < 0 ? "ago" : "from now")"
+        }
 
         return "\(relativeTime) (\(absoluteTime))"
     }
